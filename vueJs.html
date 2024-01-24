@@ -111,6 +111,7 @@
             .btn {
                 margin-right: 10px;
                 margin-bottom: 10px;
+                cursor: pointer;
             }
         </style>
     </head>
@@ -119,18 +120,18 @@
     <body>
         <div class="container-fluid">
             <div id="app">
-                <div>
+                <div class="bandeauHeader">
                     <h1>{{ message }}</h1>
                     <hr />
                     <div class="alignButton">
-                        <button id="fetch-users" class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
-                        <button id="trieFemme" class="btn btn-primary" @click="() => filterByGender('female')">Utilisateurs femmes</button>
-                        <button id="trieHomme" class="btn btn-primary" @click="() => filterByGender('male')">Utilisateurs hommes</button>
-                        <button id="youngAge" class="btn btn-primary" @click="sortYoungest">Utilisateurs les plus jeunes</button>
-                        <button id="oldAge" class="btn btn-primary" @click="sortOldest">Utilisateurs les plus âgés</button>
-                        <button id="reset" class="btn btn-secondary" @click="resetUsers">Réinitialiser</button>
+                        <button class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
+                        <button class="btn btn-primary" @click="() => filterByGender('female')">Utilisateurs femmes</button>
+                        <button class="btn btn-primary" @click="() => filterByGender('male')">Utilisateurs hommes</button>
+                        <button class="btn btn-primary" @click="sortYoungest">Utilisateurs les plus jeunes</button>
+                        <button class="btn btn-primary" @click="sortOldest">Utilisateurs les plus âgés</button>
+                        <button class="btn btn-secondary" @click="resetUsers">Réinitialiser</button>
                     </div>
-                    <p>Nombres d'utilisateurs : <span id="nombrePersonne">{{ users.length }}</span></p>
+                    <p>Nombres d'utilisateurs : <span id="nombrePersonne"><strong>{{ users.length }}</strong></span></p>
                 </div>
                 <div v-if="!isTableVisible">
                     <p>Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.</p>
@@ -175,26 +176,23 @@
                     const fetchUsers = async () => {
                         const response = await axios.get('https://randomuser.me/api/?results=20');
                         originalUsers.value = response.data.results;
-                        users.value = [...originalUsers.value];
+                        users.value = users.value.concat([...originalUsers.value]);
                         isTableVisible.value = true;
                     };
 
-                    // Tri par âge croissant
+                    //Fonctions de tri et de filtrage
                     const sortYoungest = () => {
                         users.value.sort((a, b) => a.dob.age - b.dob.age);
                     };
 
-                    // Tri par âge décroissant
                     const sortOldest = () => {
                         users.value.sort((a, b) => b.dob.age - a.dob.age);
                     };
 
-                    // Filtrage par genre
                     const filterByGender = (gender) => {
                         users.value = originalUsers.value.filter(user => user.gender === gender);
                     };
 
-                    // Réinitialiser les utilisateurs
                     const resetUsers = () => {
                         users.value = [...originalUsers.value];
                     };
