@@ -12,42 +12,47 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div id="app">
-      <div>
-        <h1>{{ message }}</h1>
-        <hr />
-        <div class="alignButton">
-        <button id="fetch-users" class="btn btn-primary" @click="fetchUsers">Fetch users</button>
-        <!--<button id="youngAge" class="btn btn-primary" @click="sortYoungest">Youngest users</button>
-          <button id="oldAge" class="btn btn-primary" @click="sortOldest">Oldest users</button>
-          <button id="trieFemme" class="btn btn-primary" @click="filterByGender">women users</button>
-          <button id="trieHomme" class="btn btn-primary" @click="filterByGender">men users</button>-->
+    <div class="container-fluid">
+        <div id="app">
+            <div>
+                <h1>{{ message }}</h1>
+                <hr />
+                <div class="alignButton">
+                <button id="fetch-users" class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
+                <!--<button id="youngAge" class="btn btn-primary" @click="sortYoungest">Youngest users</button>
+                <button id="oldAge" class="btn btn-primary" @click="sortOldest">Oldest users</button>
+                <button id="trieFemme" class="btn btn-primary" @click="filterByGender">women users</button>
+                <button id="trieHomme" class="btn btn-primary" @click="filterByGender">men users</button>-->
+                </div>
+                <p>Nombres d'utilisateurs : <span id="nombrePersonne">{{ users.length }}</span></p>
+            </div>
+            <div v-if="!isTableVisible">
+                Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.
+            </div>
+            <div v-show="isTableVisible">
+                <table id="tbl-users" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Age</th>
+                            <th>Tel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user in users" :key="user.email">
+                        <td><img :src="user.picture.thumbnail" alt="profil"></td>
+                        <td>{{ user.gender === 'male' ? '👨' : '👩' }} {{ user.name.first }} {{ user.name.last }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.dob.age }}</td>
+                        <td>{{ user.phone }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <p>Nombres d'utilisateurs : <span id="nombrePersonne">{{ users.length }}</span></p>
-      </div>
-      <table id="tbl-users" class="table table-hover">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Age</th>
-            <th>Tel</th>
-          </tr>
-        </thead>
-        <tbody>
-            <tr v-for="user in users" :key="user.email">
-              <td><img :src="user.picture.thumbnail" alt="profil"></td>
-              <td>{{ user.gender === 'male' ? '👨' : '👩' }}{{ user.name.first }} {{ user.name.last }}</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.dob.age }}</td>
-              <td>{{ user.phone }}</td>
-            </tr>
-        </tbody>
-      </table>
     </div>
-  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3.4.15/dist/vue.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
@@ -58,17 +63,20 @@
       setup() {
         const message = ref('Annuaire des utilisateurs');
         const users = ref([]); // Stocker les données utilisateur
+        const isTableVisible = ref(false); // Contrôle l'affichage du tableau
     
         // Chargement des données utilisateur
         const fetchUsers = async () => {
           const response = await axios.get('https://randomuser.me/api/?results=20');
           users.value = response.data.results;
+          isTableVisible.value = true; // Affiche le tableau après le chargement des données
         };
     
         return {
           message,
           users,
-          fetchUsers,
+          isTableVisible,
+          fetchUsers
         };
       }
     }).mount('#app');
