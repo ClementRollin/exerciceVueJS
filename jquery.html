@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+  <title>jQuery example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div id="app">
+      <div>
+        <h1>{{ message }}</h1>
+        <hr />
+        <div class="alignButton">
+          <button id="fetch-users" class="btn btn-primary">Fetch users</button>
+          <button id="youngAge" class="btn btn-primary">Youngest users</button>
+          <button id="oldAge" class="btn btn-primary">Oldest users</button>
+          <button id="trieFemme" class="btn btn-primary">women users</button>
+          <button id="trieHomme" class="btn btn-primary">men users</button>
+        </div>
+        <p>Nombres d'utilisateurs : <span id="nombrePersonne"></span></p>
+      </div>
+      <table id="tbl-users" class="table table-hover">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Tel</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.4.15/dist/vue.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
+  <script>
+    let globalResults = [];
+    let showWomenOnly = false;
+    let showMenOnly = false;
+
+    function fetchUsers() {
+      axios('https://randomuser.me/api/?results=20').then(({
+        data: {
+          results
+        }
+      }) => {
+        globalResults = results;
+        displayUsers(results); // Afficher les utilisateurs
+      });
+    }
+
+    function displayUsers(users) {
+      const rows = users.map(user => `<tr>
+                <td><img src="${user.picture.thumbnail}" alt="photo de profil"></td>
+                <td>${user.gender === 'male' ? '👨' : '👩'}${user.name.first} ${user.name.last}</td>
+                <td>${user.email}</td>
+                <td>${user.dob.age}</td>
+                <td>${user.phone}</td>
+            </tr>`);
+
+      $('#tbl-users tbody').html(rows.join(''));
+      $('#nombrePersonne').text(users.length);
+    }
+
+    function youngAge() {
+      // Copie de globalResults pour éviter la modification directe de la variable globale
+      const youngResults = [...globalResults];
+      youngResults.sort((a, b) => a.dob.age - b.dob.age); // Trier par âge croissant
+      displayUsers(youngResults); // Afficher les utilisateurs triés
+    }
+
+    function oldAge() {
+      const oldResults = [...globalResults];
+      oldResults.sort((a, b) => b.dob.age - a.dob.age); // Trier par âge décroissant
+      displayUsers(oldResults); // Afficher les utilisateurs triés
+    }
+
+    function trieFemme() {
+      if (showWomenOnly) {
+        displayUsers(globalResults);
+        showWomenOnly = false;
+      } else {
+        const women = globalResults.filter(user => user.gender === 'female');
+        displayUsers(women);
+        showWomenOnly = true;
+      }
+    }
+
+    function trieHomme() {
+      if (showMenOnly) {
+        displayUsers(globalResults);
+        showMenOnly = false;
+      } else {
+        const men = globalResults.filter(user => user.gender === 'male');
+        displayUsers(men);
+        showMenOnly = true;
+      }
+    }
+    $(document).ready(function () {
+      $('#fetch-users').click(fetchUsers);
+      $('#youngAge').click(youngAge);
+      $('#oldAge').click(oldAge);
+      $('#trieFemme').click(trieFemme);
+      $('#trieHomme').click(trieHomme);
+    });
+  </script>
+</body>
+</html>
