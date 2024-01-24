@@ -133,7 +133,7 @@
                     </div>
                     <p>Nombres d'utilisateurs : <span><strong>{{ users.length }}</strong></span></p>
                 </div>
-                <div class="alert alert-info">
+                <div v-show="!users.length" class="alert alert-info">
                     <p>Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.</p>
                 </div>
                 <div>
