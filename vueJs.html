@@ -124,20 +124,20 @@
                     <h1>{{ message }}</h1>
                     <hr />
                     <div class="alignButton">
-                        <button class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
+                        <button @click="fetchUsers" class="btn btn-primary" :disabled="users.length">Afficher le tableau</button>
                         <button class="btn btn-primary" @click="() => filterByGender('female')">Utilisateurs femmes</button>
                         <button class="btn btn-primary" @click="() => filterByGender('male')">Utilisateurs hommes</button>
                         <button class="btn btn-primary" @click="sortYoungest">Utilisateurs les plus jeunes</button>
                         <button class="btn btn-primary" @click="sortOldest">Utilisateurs les plus âgés</button>
-                        <button class="btn btn-secondary" @click="resetUsers">Réinitialiser</button>
+                        <button @click="users = []" class="btn btn-danger" :disabled="!users.length">Réinitialiser</button>
                     </div>
-                    <p>Nombres d'utilisateurs : <span id="nombrePersonne"><strong>{{ users.length }}</strong></span></p>
+                    <p>Nombres d'utilisateurs : <span><strong>{{ users.length }}</strong></span></p>
                 </div>
-                <div v-if="!isTableVisible">
+                <div class="alert alert-info">
                     <p>Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.</p>
                 </div>
-                <div v-show="isTableVisible">
-                    <table id="tbl-users" class="table table-hover">
+                <div>
+                    <table v-if="users.length" class="table table-hover">
                         <thead>
                             <tr>
                                 <th></th>
@@ -148,7 +148,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in users" :key="user.email">
+                            <tr v-for="user in users">
                             <td><img :src="user.picture.thumbnail" alt="profil"></td>
                             <td>{{ user.gender === 'male' ? '👨' : '👩' }} {{ user.name.first }} {{ user.name.last }}</td>
                             <td>{{ user.email }}</td>
@@ -170,14 +170,12 @@
                     const message = ref('Annuaire des utilisateurs');
                     const originalUsers = ref([]); // Stocker les données utilisateur originales
                     const users = ref([]); // Stocker les données utilisateur filtrées/triées
-                    const isTableVisible = ref(false);
 
                     // Chargement des données utilisateur
                     const fetchUsers = async () => {
                         const response = await axios.get('https://randomuser.me/api/?results=20');
                         originalUsers.value = response.data.results;
                         users.value = users.value.concat([...originalUsers.value]);
-                        isTableVisible.value = true;
                     };
 
                     //Fonctions de tri et de filtrage
@@ -200,7 +198,6 @@
                     return {
                         message,
                         users,
-                        isTableVisible,
                         fetchUsers,
                         sortYoungest,
                         sortOldest,
