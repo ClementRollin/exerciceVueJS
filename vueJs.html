@@ -1,85 +1,217 @@
 <!doctype html>
 <html lang="fr">
 
-<head>
-  <title>jQuery example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head>
+        <title>jQuery example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
+        <style>
+            #app {
+                margin-top: 20px;
+            }
 
-<body>
-    <div class="container-fluid">
-        <div id="app">
-            <div>
-                <h1>{{ message }}</h1>
-                <hr />
-                <div class="alignButton">
-                <button id="fetch-users" class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
-                <!--<button id="youngAge" class="btn btn-primary" @click="sortYoungest">Youngest users</button>
-                <button id="oldAge" class="btn btn-primary" @click="sortOldest">Oldest users</button>
-                <button id="trieFemme" class="btn btn-primary" @click="filterByGender">women users</button>
-                <button id="trieHomme" class="btn btn-primary" @click="filterByGender">men users</button>-->
+            #tbl-users {
+                margin-top: 20px;
+            }
+
+            #tbl-users img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+
+            #tbl-users th {
+                cursor: pointer;
+            }
+
+            #tbl-users th:hover {
+                background-color: #f5f5f5;
+            }
+
+            #tbl-users td {
+                vertical-align: middle;
+            }
+
+            #tbl-users tbody tr:hover {
+                background-color: #f5f5f5;
+            }
+
+            #tbl-users tbody tr td:first-child {
+                width: 50px;
+            }
+
+            #tbl-users tbody tr td:nth-child(2) {
+                width: 200px;
+            }
+
+            #tbl-users tbody tr td:nth-child(3) {
+                width: 200px;
+            }
+
+            #tbl-users tbody tr td:nth-child(4) {
+                width: 50px;
+            }
+
+            #tbl-users tbody tr td:nth-child(5) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(6) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(7) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(8) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(9) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(10) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(11) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(12) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(13) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(14) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(15) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(16) {
+                width: 150px;
+            }
+
+            #tbl-users tbody tr td:nth-child(17) {
+                width: 150px;
+            }
+            .alignButton{
+                display: flex;
+                justify-content: space-evenly;
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    
+
+    <body>
+        <div class="container-fluid">
+            <div id="app">
+                <div>
+                    <h1>{{ message }}</h1>
+                    <hr />
+                    <div class="alignButton">
+                        <button id="fetch-users" class="btn btn-primary" @click="fetchUsers">Afficher le tableau</button>
+                        <button id="trieFemme" class="btn btn-primary" @click="() => filterByGender('female')">Utilisateurs femmes</button>
+                        <button id="trieHomme" class="btn btn-primary" @click="() => filterByGender('male')">Utilisateurs hommes</button>
+                        <button id="youngAge" class="btn btn-primary" @click="sortYoungest">Utilisateurs les plus jeunes</button>
+                        <button id="oldAge" class="btn btn-primary" @click="sortOldest">Utilisateurs les plus âgés</button>
+                        <button id="reset" class="btn btn-secondary" @click="resetUsers">Réinitialiser</button>
+                    </div>
+                    <p>Nombres d'utilisateurs : <span id="nombrePersonne">{{ users.length }}</span></p>
                 </div>
-                <p>Nombres d'utilisateurs : <span id="nombrePersonne">{{ users.length }}</span></p>
-            </div>
-            <div v-if="!isTableVisible">
-                Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.
-            </div>
-            <div v-show="isTableVisible">
-                <table id="tbl-users" class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Age</th>
-                            <th>Tel</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="user in users" :key="user.email">
-                        <td><img :src="user.picture.thumbnail" alt="profil"></td>
-                        <td>{{ user.gender === 'male' ? '👨' : '👩' }} {{ user.name.first }} {{ user.name.last }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.dob.age }}</td>
-                        <td>{{ user.phone }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div v-if="!isTableVisible">
+                    <p>Bonjour, aucun utilisateur n'est visible, n'hésitez pas à afficher le tableau.</p>
+                </div>
+                <div v-show="isTableVisible">
+                    <table id="tbl-users" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Tel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in users" :key="user.email">
+                            <td><img :src="user.picture.thumbnail" alt="profil"></td>
+                            <td>{{ user.gender === 'male' ? '👨' : '👩' }} {{ user.name.first }} {{ user.name.last }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.dob.age }}</td>
+                            <td>{{ user.phone }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@3.4.15/dist/vue.global.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
+        <script>
+            const { createApp, ref } = Vue;
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@3.4.15/dist/vue.global.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.js"></script>
-  <script>
-    const { createApp, ref } = Vue;
-    
-    createApp({
-      setup() {
-        const message = ref('Annuaire des utilisateurs');
-        const users = ref([]); // Stocker les données utilisateur
-        const isTableVisible = ref(false); // Contrôle l'affichage du tableau
-    
-        // Chargement des données utilisateur
-        const fetchUsers = async () => {
-          const response = await axios.get('https://randomuser.me/api/?results=20');
-          users.value = response.data.results;
-          isTableVisible.value = true; // Affiche le tableau après le chargement des données
-        };
-    
-        return {
-          message,
-          users,
-          isTableVisible,
-          fetchUsers
-        };
-      }
-    }).mount('#app');
-    </script>    
-</body>
+            createApp({
+                setup() {
+                    const message = ref('Annuaire des utilisateurs');
+                    const originalUsers = ref([]); // Stocker les données utilisateur originales
+                    const users = ref([]); // Stocker les données utilisateur filtrées/triées
+                    const isTableVisible = ref(false);
+
+                    // Chargement des données utilisateur
+                    const fetchUsers = async () => {
+                        const response = await axios.get('https://randomuser.me/api/?results=20');
+                        originalUsers.value = response.data.results;
+                        users.value = [...originalUsers.value];
+                        isTableVisible.value = true;
+                    };
+
+                    // Tri par âge croissant
+                    const sortYoungest = () => {
+                        users.value.sort((a, b) => a.dob.age - b.dob.age);
+                    };
+
+                    // Tri par âge décroissant
+                    const sortOldest = () => {
+                        users.value.sort((a, b) => b.dob.age - a.dob.age);
+                    };
+
+                    // Filtrage par genre
+                    const filterByGender = (gender) => {
+                        users.value = originalUsers.value.filter(user => user.gender === gender);
+                    };
+
+                    // Réinitialiser les utilisateurs
+                    const resetUsers = () => {
+                        users.value = [...originalUsers.value];
+                    };
+
+                    return {
+                        message,
+                        users,
+                        isTableVisible,
+                        fetchUsers,
+                        sortYoungest,
+                        sortOldest,
+                        filterByGender,
+                        resetUsers
+                    };
+                }
+            }).mount('#app');
+
+        </script>    
+    </body>    
 </html>
