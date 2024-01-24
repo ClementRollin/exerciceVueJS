@@ -104,9 +104,13 @@
                 width: 150px;
             }
             .alignButton{
-                display: flex;
-                justify-content: space-evenly;
+                display: wrap;
+                flex-wrap: wrap;
                 margin-bottom: 20px;
+            }
+            .btn {
+                margin-right: 10px;
+                margin-bottom: 10px;
             }
         </style>
     </head>
@@ -207,7 +211,6 @@
                     };
                 }
             }).mount('#app');
-
         </script>    
     </body>    
 </html>
